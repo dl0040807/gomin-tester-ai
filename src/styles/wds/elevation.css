@@ -1,0 +1,29 @@
+/* Wanted Design System — elevation, radius and motion.
+   Shadow values are the file's own rgba stacks (rgba(0,0,0,0.08) / 0.12 and the
+   rgba(23,23,23,0.06–0.10) card family); radii are the Figma Frame/Modal radius variables. */
+:root{
+  /* Hairline "border" the file draws as an inset shadow rather than a real border. */
+  --shadow-hairline:inset 0 0 0 1px rgba(112,115,124,0.22);
+  --shadow-hairline-weak:inset 0 0 0 1px rgba(112,115,124,0.16);
+  /* Raised surfaces: cards, menus, popovers, snackbars. */
+  --shadow-card:0 1px 2px rgba(23,23,23,0.06),0 2px 8px rgba(23,23,23,0.07);
+  --shadow-menu:0 2px 8px rgba(0,0,0,0.08),0 6px 24px rgba(0,0,0,0.12);
+  --shadow-modal:0 8px 28px rgba(0,0,0,0.12),0 2px 8px rgba(23,23,23,0.10);
+  /* Radii (Figma float variables are unitless — these are the px forms). */
+  --radius-frame:calc(var(--radius) * 1px);          /* 12 */
+  --radius-modal:calc(var(--radius-2) * 1px);        /* 14 */
+  --radius-pill:9999px;
+  --radius-circle:50%;
+  /* Motion. The library's interaction layers cross-fade; nothing bounces. */
+  --ease-standard:cubic-bezier(0.4,0,0.2,1); /* @kind other */
+  --ease-decelerate:cubic-bezier(0,0,0.2,1); /* @kind other */
+  --duration-fast:120ms; /* @kind other */
+  --duration-normal:200ms; /* @kind other */
+  --duration-slow:320ms; /* @kind other */
+  /* Interaction overlay opacities, from Decorate/Interaction. */
+  --interaction-hover:0.05; /* @kind other */
+  --interaction-press:0.09; /* @kind other */
+  --interaction-disabled:0.43; /* @kind other */
+}
+a{color:var(--primary-normal);text-decoration:none}
+a:hover{color:var(--primary-strong);text-decoration:underline}

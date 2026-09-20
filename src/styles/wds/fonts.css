@@ -1,0 +1,17 @@
+/* Wanted Design System — webfonts.
+   The .fig ships no font binaries; both families are open source and loaded from jsDelivr.
+   VERIFIED: document.fonts reports "Pretendard JP Variable" and "Wanted Sans Variable"
+   loaded and rendering from the CDN — no local binaries are needed. If you'd rather
+   self-host, upload the .woff2 files and swap the @import lines for @font-face rules
+   using these exact family names.
+   Pretendard JP  → the working typeface for all product UI text (the file's dominant face).
+   Wanted Sans    → the brand/display face, used in logo lockups and marketing headlines. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-jp-dynamic-subset.css');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
+@import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
+:root{
+  --font-ui:"Pretendard JP Variable","Pretendard JP","Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-brand:"Wanted Sans Variable","Wanted Sans",var(--font-ui);
+  --font-mono:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;
+}

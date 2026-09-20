@@ -1,0 +1,42 @@
+/* Wanted Design System — type scale. 19 styles, transcribed verbatim from the Typography page.
+   Every size/line-height/letter-spacing pair below is the file's value, not a rounded approximation. */
+:root{
+  --type-display1-size:56px;--type-display1-line:72px;--type-display1-track:-0.032em;
+  --type-display2-size:40px;--type-display2-line:52px;--type-display2-track:-0.0282em;
+  --type-display3-size:36px;--type-display3-line:48px;--type-display3-track:-0.027em;
+  --type-title1-size:32px;--type-title1-line:44px;--type-title1-track:-0.0253em;
+  --type-title2-size:28px;--type-title2-line:38px;--type-title2-track:-0.0236em;
+  --type-title3-size:24px;--type-title3-line:32px;--type-title3-track:-0.023em;
+  --type-heading1-size:22px;--type-heading1-line:30px;--type-heading1-track:-0.0194em;
+  --type-heading2-size:20px;--type-heading2-line:28px;--type-heading2-track:-0.012em;
+  --type-headline1-size:18px;--type-headline1-line:26px;--type-headline1-track:-0.002em;
+  --type-headline2-size:17px;--type-headline2-line:24px;--type-headline2-track:0em;
+  --type-body1-normal-size:16px;--type-body1-normal-line:24px;--type-body1-track:0.0057em;
+  --type-body1-reading-line:26px;
+  --type-body2-normal-size:15px;--type-body2-normal-line:22px;--type-body2-track:0.0096em;
+  --type-body2-reading-line:24px;
+  --type-label1-size:14px;--type-label1-normal-line:20px;--type-label1-reading-line:22px;--type-label1-track:0.0145em;
+  --type-label2-size:13px;--type-label2-line:18px;--type-label2-track:0.0194em;
+  --type-caption1-size:12px;--type-caption1-line:16px;--type-caption1-track:0.0252em;
+  --type-caption2-size:11px;--type-caption2-line:14px;--type-caption2-track:0.0311em;
+}
+.wds-display1,.wds-display2,.wds-display3,.wds-title1,.wds-title2,.wds-title3,.wds-heading1,.wds-heading2,.wds-headline1,.wds-headline2,.wds-body1-normal,.wds-body1-reading,.wds-body2-normal,.wds-body2-reading,.wds-label1-normal,.wds-label1-reading,.wds-label2,.wds-caption1,.wds-caption2{font-family:var(--font-ui);margin:0}
+.wds-display1{font-size:var(--type-display1-size);line-height:var(--type-display1-line);letter-spacing:var(--type-display1-track);font-weight:700}
+.wds-display2{font-size:var(--type-display2-size);line-height:var(--type-display2-line);letter-spacing:var(--type-display2-track);font-weight:700}
+.wds-display3{font-size:var(--type-display3-size);line-height:var(--type-display3-line);letter-spacing:var(--type-display3-track);font-weight:700}
+.wds-title1{font-size:var(--type-title1-size);line-height:var(--type-title1-line);letter-spacing:var(--type-title1-track);font-weight:700}
+.wds-title2{font-size:var(--type-title2-size);line-height:var(--type-title2-line);letter-spacing:var(--type-title2-track);font-weight:700}
+.wds-title3{font-size:var(--type-title3-size);line-height:var(--type-title3-line);letter-spacing:var(--type-title3-track);font-weight:700}
+.wds-heading1{font-size:var(--type-heading1-size);line-height:var(--type-heading1-line);letter-spacing:var(--type-heading1-track);font-weight:600}
+.wds-heading2{font-size:var(--type-heading2-size);line-height:var(--type-heading2-line);letter-spacing:var(--type-heading2-track);font-weight:600}
+.wds-headline1{font-size:var(--type-headline1-size);line-height:var(--type-headline1-line);letter-spacing:var(--type-headline1-track);font-weight:600}
+.wds-headline2{font-size:var(--type-headline2-size);line-height:var(--type-headline2-line);letter-spacing:var(--type-headline2-track);font-weight:600}
+.wds-body1-normal{font-size:var(--type-body1-normal-size);line-height:var(--type-body1-normal-line);letter-spacing:var(--type-body1-track);font-weight:500}
+.wds-body1-reading{font-size:var(--type-body1-normal-size);line-height:var(--type-body1-reading-line);letter-spacing:var(--type-body1-track);font-weight:500}
+.wds-body2-normal{font-size:var(--type-body2-normal-size);line-height:var(--type-body2-normal-line);letter-spacing:var(--type-body2-track);font-weight:500}
+.wds-body2-reading{font-size:var(--type-body2-normal-size);line-height:var(--type-body2-reading-line);letter-spacing:var(--type-body2-track);font-weight:500}
+.wds-label1-normal{font-size:var(--type-label1-size);line-height:var(--type-label1-normal-line);letter-spacing:var(--type-label1-track);font-weight:600}
+.wds-label1-reading{font-size:var(--type-label1-size);line-height:var(--type-label1-reading-line);letter-spacing:var(--type-label1-track);font-weight:600}
+.wds-label2{font-size:var(--type-label2-size);line-height:var(--type-label2-line);letter-spacing:var(--type-label2-track);font-weight:500}
+.wds-caption1{font-size:var(--type-caption1-size);line-height:var(--type-caption1-line);letter-spacing:var(--type-caption1-track);font-weight:500}
+.wds-caption2{font-size:var(--type-caption2-size);line-height:var(--type-caption2-line);letter-spacing:var(--type-caption2-track);font-weight:600}

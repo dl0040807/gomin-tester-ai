@@ -30,8 +30,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — never commit real secrets (.env.local, .env, etc.)
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# leftover nested scaffold / local prototype (not the app)
+/gogo/
+/PRD 기반 인터렉티브 프로토타입 (2)/
 
 # vercel
 .vercel
