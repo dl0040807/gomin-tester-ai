@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { supabase, supabaseConfigured } from "@/lib/supabase/client";
 import { shareCardToKakao, shareLinkToKakao, worryShareCardCopy } from "@/utils/kakao";
 import { analyzePersonalityText, analyzeScreenshot, requestRecommendations } from "@/apis/analyze";
 import { mergeTags, timeAgo } from "@/utils/format";
@@ -201,19 +201,39 @@ export default function HomeContainer() {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!supabaseConfigured) {
+      setAuthError("Vercel 환경 변수에 NEXT_PUBLIC_SUPABASE_URL과 NEXT_PUBLIC_SUPABASE_ANON_KEY를 넣고 다시 배포해야 해요.");
+      return;
+    }
+
+    let cancelled = false;
+    const timeout = window.setTimeout(() => {
+      if (!cancelled) {
+        setAuthError("로그인 서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요.");
+      }
+    }, 12000);
+
     (async () => {
       const { data } = await supabase.auth.getSession();
       let uid = data.session?.user?.id ?? null;
       if (!uid) {
         const { data: signInData, error } = await supabase.auth.signInAnonymously();
         if (error) {
-          setAuthError(error.message);
+          if (!cancelled) setAuthError(error.message);
           return;
         }
         uid = signInData.user?.id ?? null;
       }
-      setUserId(uid);
+      if (!cancelled && uid) {
+        window.clearTimeout(timeout);
+        setUserId(uid);
+      }
     })();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
   }, []);
 
   const loadContacts = async (uid: string) => {
@@ -959,11 +979,9 @@ export default function HomeContainer() {
           color: "var(--label-normal)",
         }}
       >
-        {authError && (
-          <div style={{ margin: "16px 20px 0", borderRadius: 12, background: "rgba(224,66,66,0.08)", padding: "12px 16px", fontSize: 14, color: "var(--status-negative)" }}>
-            익명 로그인 실패: {authError}
-          </div>
-        )}
+        <div style={{ margin: "auto 20px", textAlign: "center", fontSize: 14, color: "var(--label-alternative)" }}>
+          {authError ? `시작할 수 없어요. ${authError}` : "불러오는 중…"}
+        </div>
       </div>
     );
   }
