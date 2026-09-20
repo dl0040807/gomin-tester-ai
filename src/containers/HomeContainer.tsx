@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { supabase, supabaseConfigured } from "@/lib/supabase/client";
 import { shareCardToKakao, shareLinkToKakao, worryShareCardCopy } from "@/utils/kakao";
 import { analyzePersonalityText, analyzeScreenshot, requestRecommendations } from "@/apis/analyze";
 import { mergeTags, timeAgo } from "@/utils/format";
@@ -125,7 +125,6 @@ export default function HomeContainer() {
   const [authError, setAuthError] = useState("");
 
   const [step, setStep] = useState<Step>("input");
-  const [initialized, setInitialized] = useState(false);
 
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [askSelectedIds, setAskSelectedIds] = useState<Set<string>>(new Set());
@@ -201,19 +200,39 @@ export default function HomeContainer() {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!supabaseConfigured) {
+      setAuthError("Vercel 환경 변수에 NEXT_PUBLIC_SUPABASE_URL과 NEXT_PUBLIC_SUPABASE_ANON_KEY를 넣고 다시 배포해야 해요.");
+      return;
+    }
+
+    let cancelled = false;
+    const timeout = window.setTimeout(() => {
+      if (!cancelled) {
+        setAuthError("로그인 서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요.");
+      }
+    }, 4000);
+
     (async () => {
       const { data } = await supabase.auth.getSession();
       let uid = data.session?.user?.id ?? null;
       if (!uid) {
         const { data: signInData, error } = await supabase.auth.signInAnonymously();
         if (error) {
-          setAuthError(error.message);
+          if (!cancelled) setAuthError(error.message);
           return;
         }
         uid = signInData.user?.id ?? null;
       }
-      setUserId(uid);
+      if (!cancelled && uid) {
+        window.clearTimeout(timeout);
+        setUserId(uid);
+      }
     })();
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
   }, []);
 
   const loadContacts = async (uid: string) => {
@@ -269,17 +288,31 @@ export default function HomeContainer() {
     if (!error && data) setRepliedInvites(data);
   };
 
-  // 재방문(고민 기록이 있음) → F2-1 홈, 첫 방문 → F1-1 입력
+  // 재방문이면 홈을 먼저 보여주고, 기록은 뒤에서 불러온다.
   useEffect(() => {
-    if (!userId || initialized) return;
+    try {
+      if (window.localStorage.getItem("gogo-has-worries") === "1") setStep("home");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
     (async () => {
       const data = await refreshWorries(userId);
       void refreshRepliedInvites(userId);
-      setStep(data.length > 0 ? "home" : "input");
-      setInitialized(true);
+      try {
+        window.localStorage.setItem("gogo-has-worries", data.length > 0 ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      if (data.length > 0) {
+        setStep((current) => (current === "input" ? "home" : current));
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, initialized]);
+  }, [userId]);
 
   // 답장이 오면 새로고침 없이 바로 반영 — worry_invites가 실시간 publication에 등록돼 있어야 한다
   // (supabase/migrations/0006_worry_invites_realtime.sql).
@@ -945,29 +978,6 @@ export default function HomeContainer() {
     void ensureInviteUrl();
   };
 
-  // 재방문 여부(F2-1 vs F1-1)를 확인하기 전까지는 아무 화면도 그리지 않아
-  // F1-1이 잠깐 나타났다 F2-1로 바뀌는 깜빡임을 막는다.
-  if (!initialized) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: "var(--background-normal-alternative)",
-          fontFamily: "var(--font-ui)",
-          color: "var(--label-normal)",
-        }}
-      >
-        {authError && (
-          <div style={{ margin: "16px 20px 0", borderRadius: 12, background: "rgba(224,66,66,0.08)", padding: "12px 16px", fontSize: 14, color: "var(--status-negative)" }}>
-            익명 로그인 실패: {authError}
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div
       style={{
@@ -991,11 +1001,11 @@ export default function HomeContainer() {
             fontFamily: "var(--font-ui)",
           }}
         >
-          <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6">
             <button type="button" onClick={() => setStep("home")} className="flex shrink-0 items-center gap-2">
               <span style={{ height: 10, width: 10, borderRadius: "50%", background: "var(--primary-normal)" }} />
               <span style={{ fontSize: 14, fontWeight: 700, whiteSpace: "nowrap", color: "var(--label-normal)" }}>
-                고민 테스터 AI
+                고고
               </span>
             </button>
             <nav className="flex shrink-0 gap-1">
