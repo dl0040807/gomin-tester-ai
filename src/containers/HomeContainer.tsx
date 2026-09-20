@@ -991,11 +991,11 @@ export default function HomeContainer() {
             fontFamily: "var(--font-ui)",
           }}
         >
-          <div className="mx-auto flex max-w-xl items-center justify-between px-4 py-3 sm:px-6">
+          <div className="flex items-center justify-between px-4 py-3 sm:px-6">
             <button type="button" onClick={() => setStep("home")} className="flex shrink-0 items-center gap-2">
               <span style={{ height: 10, width: 10, borderRadius: "50%", background: "var(--primary-normal)" }} />
               <span style={{ fontSize: 14, fontWeight: 700, whiteSpace: "nowrap", color: "var(--label-normal)" }}>
-                고민 테스터 AI
+                고고
               </span>
             </button>
             <nav className="flex shrink-0 gap-1">
