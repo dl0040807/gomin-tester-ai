@@ -125,7 +125,6 @@ export default function HomeContainer() {
   const [authError, setAuthError] = useState("");
 
   const [step, setStep] = useState<Step>("input");
-  const [initialized, setInitialized] = useState(false);
 
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [askSelectedIds, setAskSelectedIds] = useState<Set<string>>(new Set());
@@ -211,7 +210,7 @@ export default function HomeContainer() {
       if (!cancelled) {
         setAuthError("로그인 서버에 연결하지 못했어요. 잠시 후 새로고침해 주세요.");
       }
-    }, 12000);
+    }, 4000);
 
     (async () => {
       const { data } = await supabase.auth.getSession();
@@ -289,17 +288,31 @@ export default function HomeContainer() {
     if (!error && data) setRepliedInvites(data);
   };
 
-  // 재방문(고민 기록이 있음) → F2-1 홈, 첫 방문 → F1-1 입력
+  // 재방문이면 홈을 먼저 보여주고, 기록은 뒤에서 불러온다.
   useEffect(() => {
-    if (!userId || initialized) return;
+    try {
+      if (window.localStorage.getItem("gogo-has-worries") === "1") setStep("home");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return;
     (async () => {
       const data = await refreshWorries(userId);
       void refreshRepliedInvites(userId);
-      setStep(data.length > 0 ? "home" : "input");
-      setInitialized(true);
+      try {
+        window.localStorage.setItem("gogo-has-worries", data.length > 0 ? "1" : "0");
+      } catch {
+        /* ignore */
+      }
+      if (data.length > 0) {
+        setStep((current) => (current === "input" ? "home" : current));
+      }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, initialized]);
+  }, [userId]);
 
   // 답장이 오면 새로고침 없이 바로 반영 — worry_invites가 실시간 publication에 등록돼 있어야 한다
   // (supabase/migrations/0006_worry_invites_realtime.sql).
@@ -964,27 +977,6 @@ export default function HomeContainer() {
     setStep("message");
     void ensureInviteUrl();
   };
-
-  // 재방문 여부(F2-1 vs F1-1)를 확인하기 전까지는 아무 화면도 그리지 않아
-  // F1-1이 잠깐 나타났다 F2-1로 바뀌는 깜빡임을 막는다.
-  if (!initialized) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          background: "var(--background-normal-alternative)",
-          fontFamily: "var(--font-ui)",
-          color: "var(--label-normal)",
-        }}
-      >
-        <div style={{ margin: "auto 20px", textAlign: "center", fontSize: 14, color: "var(--label-alternative)" }}>
-          {authError ? `시작할 수 없어요. ${authError}` : "불러오는 중…"}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
